@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0f172a" />
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="url(#g)" opacity="0.95" />
+  <text x="120" y="220" fill="#ffffff" font-family="Rubik, system-ui, sans-serif" font-size="56" font-weight="700">Rivka Schreiber</text>
+  <text x="120" y="300" fill="#e6eef8" font-family="Assistant, system-ui, sans-serif" font-size="32">Full Stack Software Developer • React, TypeScript, Node.js</text>
+  <text x="120" y="380" fill="#e6eef8" font-family="Assistant, system-ui, sans-serif" font-size="22">Open to work — Available for hire</text>
+</svg>

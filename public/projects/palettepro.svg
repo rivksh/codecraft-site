@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#fff7ed" />
+  <rect x="40" y="40" width="1120" height="595" rx="16" fill="#fff" stroke="#fde68a" />
+  <text x="80" y="140" font-family="Rubik, system-ui, sans-serif" font-size="48" fill="#92400e">PalettePro</text>
+  <text x="80" y="200" font-family="Assistant, system-ui, sans-serif" font-size="20" fill="#92400e">Angular • Node.js — designer palette sharing</text>
+</svg>
