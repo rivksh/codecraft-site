@@ -51,8 +51,8 @@ const About = () => {
                   <li>Built and maintained Node.js REST APIs and PostgreSQL (Supabase) schemas.</li>
                   <li>Integrated Zoom meetings, Google Calendar synchronization, and LinkedIn login.</li>
                   <li>Delivered 5+ full features from PRD to production; improved API performance by 25%.</li>
-                </ul>
-              </div>
+                  </ul>
+                </motion.div>
 
               <h3 className="font-semibold text-xl text-primary dark:text-primary-light mt-6">Selected Projects</h3>
               <div className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
@@ -88,7 +88,7 @@ const About = () => {
                   </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
             <motion.aside 
               className="space-y-6"
@@ -160,8 +160,7 @@ const About = () => {
                   <div className="text-sm text-primary dark:text-primary-light mt-1">Graduated with honors</div>
                 </div>
               </motion.div>
-              </div>
-            </aside>
+            </motion.aside>
           </div>
 
           <div className="mt-8 text-center">
