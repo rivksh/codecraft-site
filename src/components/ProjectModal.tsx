@@ -57,39 +57,76 @@ const ProjectModal: React.FC<Props> = ({
   };
 
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const previousActiveRef = useRef<HTMLElement | null>(null);
 
-  // Basic focus trap: keep focus inside the modal while open
+  // Improved focus trap: save previous focus, trap Tab/Shift+Tab, restore focus on close,
+  // and mark background elements aria-hidden for screen readers.
   useEffect(() => {
     if (!open) return;
     const node = modalRef.current;
     if (!node) return;
 
-    // focus the first focusable element (close button) when opened
-    const focusable = node.querySelectorAll<HTMLElement>('a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])');
+    // Save previously focused element so we can restore focus when modal closes
+    previousActiveRef.current = document.activeElement as HTMLElement | null;
+
+    // focus the first focusable element when opened
+    const getFocusable = () => Array.from(node.querySelectorAll<HTMLElement>('a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])')).filter(el => !el.hasAttribute('disabled')) as HTMLElement[];
+    const focusable = getFocusable();
     if (focusable.length) focusable[0].focus();
 
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-      const elements = Array.from(focusable).filter(el => !el.hasAttribute('disabled')) as HTMLElement[];
-      if (elements.length === 0) return;
-      const first = elements[0];
-      const last = elements[elements.length - 1];
-
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
+    // set aria-hidden on everything in #root except the modal to hide background from screen readers
+    const root = document.getElementById('root');
+    const hiddenNodes: Element[] = [];
+    if (root) {
+      Array.from(root.children).forEach((child) => {
+        if (child === node) return;
+        // store and set
+        if (!child.hasAttribute('aria-hidden')) {
+          hiddenNodes.push(child);
+          child.setAttribute('aria-hidden', 'true');
         }
-      } else {
-        if (document.activeElement === last) {
+      });
+    }
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        const elements = getFocusable();
+        if (elements.length === 0) {
           e.preventDefault();
-          first.focus();
+          return;
+        }
+        const first = elements[0];
+        const last = elements[elements.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first || document.activeElement === node) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
         }
       }
     };
 
     node.addEventListener('keydown', handleKey as any);
-    return () => node.removeEventListener('keydown', handleKey as any);
+
+    return () => {
+      node.removeEventListener('keydown', handleKey as any);
+      // restore aria-hidden on siblings
+      hiddenNodes.forEach(n => n.removeAttribute('aria-hidden'));
+      // restore focus to previous element if still in the document
+      const prev = previousActiveRef.current;
+      if (prev && typeof prev.focus === 'function') {
+        try {
+          prev.focus();
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
   }, [open]);
 
   return (
