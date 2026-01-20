@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 const About = () => {
   return (
-  <section id="about" className="section py-20 bg-white dark:bg-gray-900">
+  <section id="about" aria-labelledby="about-heading" className="section py-20 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0 }}
@@ -11,6 +11,7 @@ const About = () => {
           transition={{ duration: 0.8 }}
         >
           <motion.h2 
+            id="about-heading"
             className="text-3xl md:text-4xl font-heading text-center mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -115,7 +116,7 @@ const About = () => {
                   </p>
                   <p className="text-sm flex items-center gap-2">
                     <span role="img" aria-label="github">🌐</span>
-                    <a href="https://github.com/rivksh" target="_blank" rel="noreferrer" className="hover:text-accent">github.com/rivksh</a>
+                    <a href="https://github.com/rivksh" target="_blank" rel="noopener noreferrer" className="hover:text-accent">github.com/rivksh</a>
                   </p>
                   <p className="text-sm flex items-center gap-2">
                     <span role="img" aria-label="location">📍</span>
@@ -164,7 +165,7 @@ const About = () => {
           </div>
 
           <div className="mt-8 text-center">
-            <a href="/Rivka-CV.pdf" className="btn-primary mr-4" download>Download CV (PDF)</a>
+            <a href="/Rivka-CV.pdf" className="btn-primary mr-4" download aria-label="Download Rivka Schreiber CV (PDF)">Download CV (PDF)</a>
             <a href="#contact" className="btn-secondary">Contact</a>
           </div>
         </motion.div>

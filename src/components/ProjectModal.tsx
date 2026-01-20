@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import FocusTrap from 'focus-trap-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
@@ -42,7 +43,7 @@ const ProjectModal: React.FC<Props> = ({
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  // Render controlled by AnimatePresence below; keep hooks stable across renders.
 
   const statusColors: Record<string, string> = {
     completed: 'bg-green-500',
@@ -57,30 +58,18 @@ const ProjectModal: React.FC<Props> = ({
   };
 
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const previousActiveRef = useRef<HTMLElement | null>(null);
 
-  // Improved focus trap: save previous focus, trap Tab/Shift+Tab, restore focus on close,
-  // and mark background elements aria-hidden for screen readers.
+  // Mark background siblings as aria-hidden for screen readers while modal is open.
   useEffect(() => {
     if (!open) return;
     const node = modalRef.current;
     if (!node) return;
 
-    // Save previously focused element so we can restore focus when modal closes
-    previousActiveRef.current = document.activeElement as HTMLElement | null;
-
-    // focus the first focusable element when opened
-    const getFocusable = () => Array.from(node.querySelectorAll<HTMLElement>('a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])')).filter(el => !el.hasAttribute('disabled')) as HTMLElement[];
-    const focusable = getFocusable();
-    if (focusable.length) focusable[0].focus();
-
-    // set aria-hidden on everything in #root except the modal to hide background from screen readers
     const root = document.getElementById('root');
     const hiddenNodes: Element[] = [];
     if (root) {
       Array.from(root.children).forEach((child) => {
         if (child === node) return;
-        // store and set
         if (!child.hasAttribute('aria-hidden')) {
           hiddenNodes.push(child);
           child.setAttribute('aria-hidden', 'true');
@@ -88,44 +77,8 @@ const ProjectModal: React.FC<Props> = ({
       });
     }
 
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Tab') {
-        const elements = getFocusable();
-        if (elements.length === 0) {
-          e.preventDefault();
-          return;
-        }
-        const first = elements[0];
-        const last = elements[elements.length - 1];
-        if (e.shiftKey) {
-          if (document.activeElement === first || document.activeElement === node) {
-            e.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
-        }
-      }
-    };
-
-    node.addEventListener('keydown', handleKey as any);
-
     return () => {
-      node.removeEventListener('keydown', handleKey as any);
-      // restore aria-hidden on siblings
       hiddenNodes.forEach(n => n.removeAttribute('aria-hidden'));
-      // restore focus to previous element if still in the document
-      const prev = previousActiveRef.current;
-      if (prev && typeof prev.focus === 'function') {
-        try {
-          prev.focus();
-        } catch (e) {
-          // ignore
-        }
-      }
     };
   }, [open]);
 
@@ -135,12 +88,21 @@ const ProjectModal: React.FC<Props> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <motion.div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            data-testid="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
 
+          <FocusTrap
+            active={open}
+            focusTrapOptions={{
+              clickOutsideDeactivates: true,
+              escapeDeactivates: false,
+              returnFocusOnDeactivate: true,
+            }}
+          >
           <motion.div
             role="dialog"
             aria-labelledby="modal-title"
@@ -243,6 +205,7 @@ const ProjectModal: React.FC<Props> = ({
               </motion.div>
             </div>
           </motion.div>
+            </FocusTrap>
         </div>
       )}
     </AnimatePresence>
