@@ -63,6 +63,32 @@ async function main() {
         console.warn(`Failed to convert ${f}: ${e.message}`);
       }
     }
+    // generate an index.html linking to all generated HTML reports
+    try {
+      const outFiles = await fs.readdir(outDir);
+      const links = outFiles
+        .filter(x => x.endsWith('.html'))
+        .map(x => `<li><a href="./${encodeURI(x)}">${escapeHtml(x)}</a></li>`)
+        .join('\n');
+      const indexHtml = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>a11y reports index</title>
+  <style>body{font-family:Arial, Helvetica, sans-serif;padding:20px}ul{line-height:1.8}</style>
+</head>
+<body>
+  <h1>a11y reports</h1>
+  <ul>
+    ${links}
+  </ul>
+</body>
+</html>`;
+      await fs.writeFile(path.join(outDir, 'index.html'), indexHtml, 'utf8');
+      console.log('Wrote index.html');
+    } catch (e) {
+      console.warn('Failed to write index.html:', e.message);
+    }
   } catch (e) {
     console.error('No reports directory or failed to read reports:', e.message);
     process.exit(0);
