@@ -95,6 +95,8 @@ async function main() {
   }
 }
 
-if (require.main === module) {
-  main();
-}
+// Run main when executed as a script (ESM-friendly)
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
