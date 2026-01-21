@@ -2,6 +2,10 @@
 
 This is a personal portfolio site built with React, TypeScript, Vite and Tailwind CSS.
 
+<!-- CI and Pages badges -->
+[![CI](https://github.com/rivksh/codecraft-site/actions/workflows/ci.yml/badge.svg)](https://github.com/rivksh/codecraft-site/actions/workflows/ci.yml)
+[![Pages](https://github.com/rivksh/codecraft-site/actions/workflows/gh-pages.yml/badge.svg)](https://rivksh.github.io/codecraft-site/)
+
 Quick start
 
 1. Install dependencies

@@ -46,6 +46,15 @@ CI and next steps
 - Consider adding coverage reports or uploading a11y reports as artifacts in CI.
 - Optionally add preview deployments (Vercel/Netlify) for PR previews.
 
+Recent changes (CI artifacts)
+
+- CI now runs Vitest with coverage and uploads the `coverage/` folder as an artifact on each run. This makes it easy to download and inspect coverage from the Actions run.
+
+Action items for repo admins
+
+- Enable branch protection on `master` and require the `CI` workflow to pass before merges.
+- Optionally require code review and status checks (Vitest, TypeScript) before merging.
+
 If you'd like, I can:
 - Add more a11y tests for other pages/components.
 - Add a CI job to upload a11y reports as artifacts.
