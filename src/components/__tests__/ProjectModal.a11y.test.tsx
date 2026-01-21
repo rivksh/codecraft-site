@@ -1,6 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import ProjectModal from '../ProjectModal';
+import fs from 'fs';
+import path from 'path';
 
 describe('ProjectModal accessibility', () => {
   it('has no detectable a11y violations when open', async () => {
@@ -19,6 +21,14 @@ describe('ProjectModal accessibility', () => {
     const axe = await import('axe-core');
     const runner = (axe && (axe as any).run) ? (axe as any) : (axe as any).default || axe;
     const results = await runner.run(container);
+    // write a11y report for CI artifact collection
+    try {
+      const reportsDir = path.resolve(process.cwd(), 'reports');
+      if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir);
+      fs.writeFileSync(path.join(reportsDir, 'a11y-projectmodal.json'), JSON.stringify(results, null, 2));
+    } catch (e) {
+      // ignore write errors in tests
+    }
     expect(results.violations).toHaveLength(0);
   }, 20000);
 });
